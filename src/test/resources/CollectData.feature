@@ -9,8 +9,8 @@ Feature: I collect IT news
 
 #  @OpenDeal @TRD @binary  @MT
   Scenario: open deal with one click trading
-    And I open all founded IT news at new tab
-#    And I set one click trading mode on
+    And I open all founded IT news at new tab with DevOps section
+    And I set NewsMap to Google sheet
 #    And I choose OptionType Regular Option if it exists
 #    And I open click on search field
 #    And I choose instruments tab all

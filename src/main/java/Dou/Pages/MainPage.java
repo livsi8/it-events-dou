@@ -18,9 +18,17 @@ public class MainPage extends Page implements IMainPage {
     }
 
     @FindBy(css = ".title a")
-    List<WebElement> titleNews;
+    List<WebElement> newsTitle;
     @FindBy(css = ".page-head")
-    WebElement       headNews;
-//    @FindBy(css = "[id='btLogin']")
-//    WebElement loginButton;
+    WebElement       newsHead;
+    @FindBy(css = "article.b-typo")
+    WebElement loginButton;
+    @FindBy(css = ".event-info-row .dt")
+    List<WebElement> eventInfoRowDt;
+    @FindBy(css = ".event-info-row .dd")
+    List<WebElement> eventInfoRowDd;
+    @FindBy(css = ".b-typo")
+    WebElement newsBody;
+    @FindBy(css = ".b-typo a")
+    List<WebElement> newsLinksBody;
 }
