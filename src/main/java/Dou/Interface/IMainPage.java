@@ -1,5 +1,10 @@
 package Dou.Interface;
 
-public interface IMainPage extends IPage {
+import java.util.List;
+import org.openqa.selenium.WebElement;
 
+public interface IMainPage extends IPage {
+    List<WebElement> getTitleNews();
+
+    WebElement getHeadNews();
 }
