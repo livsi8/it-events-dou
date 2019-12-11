@@ -23,7 +23,7 @@ public class DriverFactory {
                 currentUser,
                 WebDriverConfig.initialize()
             );
-            log.debug(currentUser.toString());
+//            log.debug(currentUser.toString());
         }
         return drivers.get(currentUser);
     }
