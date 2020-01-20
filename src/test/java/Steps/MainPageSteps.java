@@ -2,11 +2,11 @@ package Steps;
 
 import Core.Buffer;
 import Core.Helper;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import cucumber.api.java.en.And;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
+
 import org.openqa.selenium.WebElement;
 
 public class MainPageSteps extends Steps {
@@ -146,7 +146,23 @@ public class MainPageSteps extends Steps {
 
     @And("^I set NewsMap to Google sheet$")
     public void iSetNewsMapToGoogleSheet() {
-//        log.info("I set NewsMap to Google sheet");
-        Buffer.getNewsMap();
+        log.info("I set NewsMap to Google sheet");
+        List<List<Object>> values = new ArrayList<>();
+        List<HashMap<String, String>> newsMap = Buffer.getNewsMap();
+        for (HashMap<String, String> element : newsMap) {
+            values.add(Arrays.asList(
+                element.get("section"),
+                element.get("city"),
+                element.get("dateStart"),
+                element.get("timeStart"),
+                element.get("dateEnd"),
+                element.get("timeEnd"),
+                element.get("newsTitle"),
+                element.get("newsBody"),
+                element.get("place"),
+                element.get("price")
+            ));
+        }
+        Helper.setToGoogleSheets(new ValueRange().setValues(values));
     }
 }

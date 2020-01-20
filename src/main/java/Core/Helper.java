@@ -3,7 +3,11 @@ package Core;
 import static Core.DriverFactory.getDriver;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import Google.GoogleSheets;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import org.openqa.selenium.JavascriptExecutor;
 
 public class Helper {
@@ -70,5 +74,18 @@ public class Helper {
             city = "Винница";
         }
         return city;
+    }
+
+    public static void setToGoogleSheets(ValueRange content) {
+        try {
+            GoogleSheets.setGoogleSheetsTable(
+                    Config.getProperty("resourcesSpreadsheetId"),
+                    Config.getProperty("resourcesRange"),
+                    content
+            );
+//            Buffer.setResourcesFromGoogleSheets(sheet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
