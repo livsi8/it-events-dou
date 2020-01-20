@@ -143,6 +143,41 @@ public class MainPageSteps extends Steps {
         }
         Buffer.setNewsMap(newsMapList);
     }
+    @And("^I open all founded IT news at new tab with (.*) section test$")
+    public void iOpenAllFoundedITNewsAtNewTabTest(String section) {
+        log.info("I open all founded IT news at new tab");
+        List<WebElement>  titleNews   = iMainPage.getNewsTitle();
+        ArrayList<HashMap<String, String>> newsMapList = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+        HashMap<String, String> newsMap = new HashMap<>();
+        List<WebElement> eventInfoRowDtList = iMainPage.getEventInfoRowDt();
+        List<WebElement> eventInfoRowDdList = iMainPage.getEventInfoRowDd();
+        String dateStart = "dateStart-";
+        String dateEnd = "dateEnd-";
+        String newsTitle = "newsTitle-";
+        String timeStart = "timeStart-";
+        String newsBody = "newsBody-";
+        String timeEnd = "timeEnd-";
+        String place = "place-";
+        String price = "price-";
+        String city = "city-";
+        for (int j = 0; j < 10; j++) {
+            newsMap.put( "newsTitle", newsTitle + j);
+            newsMap.put( "dateStart", dateStart + j);
+            newsMap.put( "timeStart", timeStart + j);
+            newsMap.put( "newsBody",  newsBody  + j);
+            newsMap.put( "dateEnd",   dateEnd   + j);
+            newsMap.put( "section",   section   + j);
+            newsMap.put( "timeEnd",   timeEnd   + j);
+            newsMap.put( "place",     place     + j);
+            newsMap.put( "price",     price     + j);
+            newsMap.put( "city",      city      + j);
+
+            newsMapList.add(newsMap);
+//            Helper.closeCurrentTabAndBackToBeforeTab();
+        }
+        Buffer.setNewsMap(newsMapList);
+    }
 
     @And("^I set NewsMap to Google sheet$")
     public void iSetNewsMapToGoogleSheet() {

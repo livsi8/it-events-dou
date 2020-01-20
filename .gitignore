@@ -32,4 +32,4 @@ _ReSharper*/
 .vs/
 #Nuget packages folder
 packages/
-StoredCredential
+src/main/java/Google/StoredCredential

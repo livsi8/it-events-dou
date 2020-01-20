@@ -90,7 +90,7 @@ public class GoogleSheets {
             JSON_FACTORY,
             getCredentials(HTTP_TRANSPORT)
         ).setApplicationName(APPLICATION_NAME).build();
-        service.spreadsheets().values().update(
+        service.spreadsheets().values().append(
             spreadsheetId,
             range,
             content
@@ -104,6 +104,7 @@ public class GoogleSheets {
 //            System.out.println("No data found at google sheets.");
 //        }
 //        return values;
+        System.out.printf("Hi");
     }
 }
 
