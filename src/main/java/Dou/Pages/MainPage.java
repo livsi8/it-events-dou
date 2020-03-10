@@ -31,4 +31,6 @@ public class MainPage extends Page implements IMainPage {
     WebElement newsBody;
     @FindBy(css = ".b-typo a")
     List<WebElement> newsLinksBody;
+    @FindBy(css = ".b-paging a")
+    List<WebElement> nextList;
 }

@@ -15,4 +15,6 @@ public interface IMainPage extends IPage {
     List<WebElement> getNewsLinksBody();
 
     WebElement getNewsBody();
+
+    List<WebElement> getNextList();
 }

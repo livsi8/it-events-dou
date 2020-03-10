@@ -1,22 +1,25 @@
 package Steps;
 
+import CSV.CSVWriter;
 import Core.Buffer;
 import Core.Helper;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import cucumber.api.java.en.And;
-
-import java.util.*;
-
 import org.openqa.selenium.WebElement;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class MainPageSteps extends Steps {
     @And("^I open all founded IT news at new tab with (.*) section$")
-    public void iOpenAllFoundedITNewsAtNewTab(String section) {
+    public void iOpenAllFoundedITNewsAtNewTab(String section) throws InterruptedException {
         log.info("I open all founded IT news at new tab");
-        List<WebElement>  titleNews   = iMainPage.getNewsTitle();
-        ArrayList<HashMap<String, String>> newsMapList = new ArrayList<>();
-        for (int i = 0; i < titleNews.size(); i++) {
-            Helper.goToNewTabAndOpenUrl(titleNews.get(i).getAttribute("href"));
+        ArrayList<HashMap<String, String>> newsMapList = (Buffer.getNewsMap() == null
+                ? new ArrayList<>()
+                : (ArrayList<HashMap<String, String>>) Buffer.getNewsMap());
+        for (WebElement titleNew : iMainPage.getNewsTitle()) {
+            Helper.goToNewTabAndOpenUrl(titleNew.getAttribute("href"));
 
             HashMap<String, String> newsMap = new HashMap<>();
             List<WebElement> eventInfoRowDtList = iMainPage.getEventInfoRowDt();
@@ -30,7 +33,7 @@ public class MainPageSteps extends Steps {
             String city = "";
             for (int j = 0; j < eventInfoRowDtList.size(); j++) {
                 String dt = eventInfoRowDtList.get(j).getText().trim();
-                if (dt.matches("Відбудеться|Date|Пройдет")){
+                if (dt.matches("Відбудеться|Date|Пройдет")) {
                     String dd = eventInfoRowDdList.get(j).getText().trim();
                     String yearEnd = "";
                     String yearStart = "";
@@ -38,16 +41,16 @@ public class MainPageSteps extends Steps {
                     int currentYear = cal.get(Calendar.YEAR);
                     int currentMonth = cal.get(Calendar.MONTH);
                     if (dd.contains("(")) {
-                        dd = dd.replace(dd.substring(dd.indexOf("(")),"").trim();
+                        dd = dd.replace(dd.substring(dd.indexOf("(")), "").trim();
                     }
                     if (dd.matches(".*\\d{4}")) {
                         yearStart = String.valueOf(currentYear);
                         if (dd.contains(String.valueOf(currentYear))) {
                             yearEnd = yearStart;
-                            dd = dd.replace(dd.substring(dd.indexOf(yearStart)).trim(),"").trim();
+                            dd = dd.replace(dd.substring(dd.indexOf(yearStart)).trim(), "").trim();
                         } else {
                             yearEnd = String.valueOf(currentYear + 1);
-                            dd = dd.replace(dd.substring(dd.indexOf(yearEnd)).trim(),"").trim();
+                            dd = dd.replace(dd.substring(dd.indexOf(yearEnd)).trim(), "").trim();
                         }
                     }
 // === Month =====================
@@ -98,7 +101,7 @@ public class MainPageSteps extends Steps {
                             ? yearEnd
                             : yearStart);
                 }
-                if (dt.matches("Time|Час|Время")){
+                if (dt.matches("Time|Час|Время")) {
                     String dd = eventInfoRowDdList.get(j).getText().trim();
                     if (dd.contains(" — ")) {
                         timeStart = dd.split(" — ")[0];
@@ -107,17 +110,17 @@ public class MainPageSteps extends Steps {
                         timeStart = dd;
                     }
                 }
-                if (dt.matches("Place|Місце|Место")){
+                if (dt.matches("Place|Місце|Место")) {
                     place = eventInfoRowDdList.get(j).getText().trim();
                     city = Helper.getCity(place);
                 }
-                if (dt.matches("Price|Вартість|Стоимость")){
+                if (dt.matches("Price|Вартість|Стоимость")) {
                     price = eventInfoRowDdList.get(j).getText().trim();
                 }
             }
-            String           body       = iMainPage.getNewsBody().getText().trim();
-            List<WebElement> linksBody  = iMainPage.getNewsLinksBody();
-            String           newsBody = body;
+            String body = iMainPage.getNewsBody().getText().trim();
+            List<WebElement> linksBody = iMainPage.getNewsLinksBody();
+            String newsBody = body;
             for (WebElement webElement : linksBody) {
                 String linksText = webElement.getText();
                 String[] split = newsBody.split(linksText);
@@ -127,55 +130,67 @@ public class MainPageSteps extends Steps {
                         + (split.length > 1 ? split[1] : "");
             }
 
-            newsMap.put( "newsTitle", iMainPage.getNewsHead().getText());
-            newsMap.put( "dateStart", dateStart );
-            newsMap.put( "timeStart", timeStart );
-            newsMap.put( "newsBody",  newsBody  );
-            newsMap.put( "dateEnd",   dateEnd   );
-            newsMap.put( "section",   section   );
-            newsMap.put( "timeEnd",   timeEnd   );
-            newsMap.put( "place",     place     );
-            newsMap.put( "price",     price     );
-            newsMap.put( "city",      city      );
+            newsMap.put("newsTitle", iMainPage.getNewsHead().getText());
+            newsMap.put("dateStart", dateStart);
+            newsMap.put("timeStart", timeStart);
+            newsMap.put("newsBody", newsBody);
+            newsMap.put("dateEnd", dateEnd);
+            newsMap.put("section", section);
+            newsMap.put("timeEnd", timeEnd);
+            newsMap.put("place", place);
+            newsMap.put("price", price);
+            newsMap.put("city", city);
 
             newsMapList.add(newsMap);
             Helper.closeCurrentTabAndBackToBeforeTab();
         }
         Buffer.setNewsMap(newsMapList);
+        int count = 0;
+        if (iMainPage.getNextList().size() > 0){
+            do {
+                if (count < iMainPage.getNextList().size()) {
+                    iMainPage.getNextList().get(count).click();
+                    TimeUnit.SECONDS.sleep(5);
+                }
+            } while (++count < iMainPage.getNextList().size());
+        }
     }
     @And("^I open all founded IT news at new tab with (.*) section test$")
     public void iOpenAllFoundedITNewsAtNewTabTest(String section) {
         log.info("I open all founded IT news at new tab");
         List<WebElement>  titleNews   = iMainPage.getNewsTitle();
-        ArrayList<HashMap<String, String>> newsMapList = new ArrayList<>();
+        ArrayList<HashMap<String, String>> newsMapList = (Buffer.getNewsMap() == null
+                ? new ArrayList<>()
+                : (ArrayList<HashMap<String, String>>) Buffer.getNewsMap());
 //        for (int i = 0; i < 10; i++) {
         HashMap<String, String> newsMap = new HashMap<>();
         List<WebElement> eventInfoRowDtList = iMainPage.getEventInfoRowDt();
         List<WebElement> eventInfoRowDdList = iMainPage.getEventInfoRowDd();
-        String dateStart = "dateStart-";
-        String dateEnd = "dateEnd-";
-        String newsTitle = "newsTitle-";
-        String timeStart = "timeStart-";
-        String newsBody = "newsBody-";
-        String timeEnd = "timeEnd-";
-        String place = "place-";
-        String price = "price-";
-        String city = "city-";
-        for (int j = 0; j < 10; j++) {
-            newsMap.put( "newsTitle", newsTitle + j);
-            newsMap.put( "dateStart", dateStart + j);
-            newsMap.put( "timeStart", timeStart + j);
-            newsMap.put( "newsBody",  newsBody  + j);
-            newsMap.put( "dateEnd",   dateEnd   + j);
-            newsMap.put( "section",   section   + j);
-            newsMap.put( "timeEnd",   timeEnd   + j);
-            newsMap.put( "place",     place     + j);
-            newsMap.put( "price",     price     + j);
-            newsMap.put( "city",      city      + j);
-
-            newsMapList.add(newsMap);
-//            Helper.closeCurrentTabAndBackToBeforeTab();
-        }
+//        String dateStart = "dateStart-";
+//        String dateEnd = "dateEnd-";
+//        String newsTitle = "newsTitle-";
+//        String timeStart = "timeStart-";
+//        String newsBody = "newsBody-";
+//        String timeEnd = "timeEnd-";
+//        String place = "place-";
+//        String price = "price-";
+//        String city = "city-";
+//        for (int j = 0; j < 10; j++) {
+//            newsMap.put( "newsTitle", newsTitle + j);
+//            newsMap.put( "dateStart", dateStart + j);
+//            newsMap.put( "timeStart", timeStart + j);
+//            newsMap.put( "newsBody",  newsBody  + j);
+//            newsMap.put( "dateEnd",   dateEnd   + j);
+//            newsMap.put( "section",   section   + j);
+//            newsMap.put( "timeEnd",   timeEnd   + j);
+//            newsMap.put( "place",     place     + j);
+//            newsMap.put( "price",     price     + j);
+//            newsMap.put( "city",      city      + j);
+//
+//            newsMapList.add(newsMap);
+////            Helper.closeCurrentTabAndBackToBeforeTab();
+//        }
+        Helper.closeCurrentTabAndBackToBeforeTab();
         Buffer.setNewsMap(newsMapList);
     }
 
@@ -199,5 +214,33 @@ public class MainPageSteps extends Steps {
             ));
         }
         Helper.setToGoogleSheets(new ValueRange().setValues(values));
+    }
+
+    @And("^I save to csv$")
+    public void iSaveToCsv() throws IOException {
+        log.info("I save to csv");
+        List<HashMap<String, String>> news = Buffer.getNewsMap();
+        String[] header = {"section", "city", "dateStart", "timeStart", "dateEnd", "timeEnd", "newsTitle"
+                , "newsBody", "place", "price"};
+        List<String[]> temp = new ArrayList<>();
+        for (int i = 0; i < Buffer.getNewsMap().size(); i++) {
+            HashMap<String, String> element = Buffer.getNewsMap().get(i);
+            temp.add(new String[]{
+                element.get("section"),
+                element.get("city"),
+                element.get("dateStart"),
+                element.get("timeStart"),
+                element.get("dateEnd"),
+                element.get("timeEnd"),
+                element.get("newsTitle"),
+                element.get("newsBody"),
+                element.get("place"),
+                element.get("price")
+            });
+        }
+        new CSVWriter().writerCSV(header, temp);
+
+
+
     }
 }
