@@ -18,117 +18,107 @@ public class MainPageSteps extends Steps {
         ArrayList<HashMap<String, String>> newsMapList = (Buffer.getNewsMap() == null
                 ? new ArrayList<>()
                 : (ArrayList<HashMap<String, String>>) Buffer.getNewsMap());
-        for (WebElement titleNew : iMainPage.getNewsTitle()) {
-            Helper.goToNewTabAndOpenUrl(titleNew.getAttribute("href"));
+        int count = 0;
+        do {
+            for (WebElement titleNew : iMainPage.getNewsTitle()) {
+                Helper.goToNewTabAndOpenUrl(titleNew.getAttribute("href"));
 
-            HashMap<String, String> newsMap = new HashMap<>();
-            List<WebElement> eventInfoRowDtList = iMainPage.getEventInfoRowDt();
-            List<WebElement> eventInfoRowDdList = iMainPage.getEventInfoRowDd();
-            String dateStart = "";
-            String dateEnd = "";
-            String timeStart = "";
-            String timeEnd = "";
-            String place = "";
-            String price = "";
-            String city = "";
-            for (int j = 0; j < eventInfoRowDtList.size(); j++) {
-                String dt = eventInfoRowDtList.get(j).getText().trim();
-                if (dt.matches("Відбудеться|Date|Пройдет")) {
-                    String dd = eventInfoRowDdList.get(j).getText().trim();
-                    String yearEnd = "";
-                    String yearStart = "";
-                    Calendar cal = Calendar.getInstance();
-                    int currentYear = cal.get(Calendar.YEAR);
-                    int currentMonth = cal.get(Calendar.MONTH);
-                    if (dd.contains("(")) {
-                        dd = dd.replace(dd.substring(dd.indexOf("(")), "").trim();
-                    }
-                    if (dd.matches(".*\\d{4}")) {
-                        yearStart = String.valueOf(currentYear);
-                        if (dd.contains(String.valueOf(currentYear))) {
-                            yearEnd = yearStart;
-                            dd = dd.replace(dd.substring(dd.indexOf(yearStart)).trim(), "").trim();
-                        } else {
-                            yearEnd = String.valueOf(currentYear + 1);
-                            dd = dd.replace(dd.substring(dd.indexOf(yearEnd)).trim(), "").trim();
+                HashMap<String, String> newsMap = new HashMap<>();
+                List<WebElement> eventInfoRowDtList = iMainPage.getEventInfoRowDt();
+                List<WebElement> eventInfoRowDdList = iMainPage.getEventInfoRowDd();
+                String dateStart = "";
+                String dateEnd = "";
+                String timeStart = "";
+                String timeEnd = "";
+                String place = "";
+                String price = "";
+                String city = "";
+                for (int j = 0; j < eventInfoRowDtList.size(); j++) {
+                    String dt = eventInfoRowDtList.get(j).getText().trim();
+                    if (dt.matches("Відбудеться|Date|Пройдет")) {
+                        String dd = eventInfoRowDdList.get(j).getText().trim();
+                        String yearEnd = "";
+                        String yearStart = "";
+                        Calendar cal = Calendar.getInstance();
+                        int currentYear = cal.get(Calendar.YEAR);
+                        int currentMonth = cal.get(Calendar.MONTH);
+                        if (dd.contains("(")) {
+                            dd = dd.replace(dd.substring(dd.indexOf("(")), "").trim();
                         }
-                    }
+                        if (dd.matches(".*\\d{4}")) {
+                            yearStart = String.valueOf(currentYear);
+                            if (dd.contains(String.valueOf(currentYear))) {
+                                yearEnd = yearStart;
+                                dd = dd.replace(dd.substring(dd.indexOf(yearStart)).trim(), "").trim();
+                            } else {
+                                yearEnd = String.valueOf(currentYear + 1);
+                                dd = dd.replace(dd.substring(dd.indexOf(yearEnd)).trim(), "").trim();
+                            }
+                        }
 // === Month =====================
-                    int lastIndStart;
-                    String monthStart;
-                    String monthEnd;
-                    if (dd.matches(".*[A-Za-zА-Яа-я]\\s—\\s\\d{1,2}\\s[A-Za-zА-Яа-я].*")) {
-                        String[] doubleDate = dd.split(" — ");
-                        lastIndStart = doubleDate[0].trim().indexOf(" ");
-                        int lastIndEnd = doubleDate[1].trim().indexOf(" ");
-                        monthStart = Helper.getShortMonth(doubleDate[0].substring(lastIndStart).trim());
-                        monthEnd = Helper.getShortMonth(doubleDate[1].substring(lastIndEnd).trim());
-                    } else {
-                        lastIndStart = dd.trim().lastIndexOf(" ");
-                        monthStart = Helper.getShortMonth(dd.substring(lastIndStart).trim());
-                        monthEnd = monthStart;
-                    }
-
-                    yearStart = (yearStart.length() > 0
-                        ? yearStart
-                        : String.valueOf(currentYear
-                            + ((Integer.parseInt(monthStart) < currentMonth)? 1 : 0)));
-                    String dayStart, dayEnd = "";
-                    if (dd.matches(".*[A-Za-zА-Яа-я]\\s—\\s\\d{1,2}\\s[A-Za-zА-Яа-я].*")) {
-                        String[] doubleDate = dd.split(" — ");
-                        dayStart = doubleDate[0].split(" ")[0];
-                        dayEnd = doubleDate[1].split(" ")[0];
-                    } else {
-                        String days = dd.substring(0, lastIndStart);
-                        if (days.contains(" — ")) {
-                            dayStart = days.split(" — ")[0];
-                            dayEnd = days.split(" — ")[1];
+                        int lastIndStart;
+                        String monthStart;
+                        String monthEnd;
+                        if (dd.matches(".*[A-Za-zА-Яа-я]\\s—\\s\\d{1,2}\\s[A-Za-zА-Яа-я].*")) {
+                            String[] doubleDate = dd.split(" — ");
+                            lastIndStart = doubleDate[0].trim().indexOf(" ");
+                            int lastIndEnd = doubleDate[1].trim().indexOf(" ");
+                            monthStart = Helper.getShortMonth(doubleDate[0].substring(lastIndStart).trim());
+                            monthEnd = Helper.getShortMonth(doubleDate[1].substring(lastIndEnd).trim());
                         } else {
-                            dayStart = days;
+                            lastIndStart = dd.trim().lastIndexOf(" ");
+                            monthStart = Helper.getShortMonth(dd.substring(lastIndStart).trim());
+                            monthEnd = monthStart;
+                        }
+
+                        yearStart = (yearStart.length() > 0 ? yearStart : String.valueOf(currentYear + ((Integer.parseInt(monthStart) < currentMonth) ? 1 : 0)));
+                        String dayStart, dayEnd = "";
+                        if (dd.matches(".*[A-Za-zА-Яа-я]\\s—\\s\\d{1,2}\\s[A-Za-zА-Яа-я].*")) {
+                            String[] doubleDate = dd.split(" — ");
+                            dayStart = doubleDate[0].split(" ")[0];
+                            dayEnd = doubleDate[1].split(" ")[0];
+                        } else {
+                            String days = dd.substring(0, lastIndStart);
+                            if (days.contains(" — ")) {
+                                dayStart = days.split(" — ")[0];
+                                dayEnd = days.split(" — ")[1];
+                            } else {
+                                dayStart = days;
+                            }
+                        }
+                        dayStart = (dayStart.length() > 1 ? dayStart : "0" + dayStart);
+                        dateStart = dayStart + "." + monthStart + "." + yearStart;
+                        dateEnd = (dayEnd.length() > 0 ? (dayEnd.length() > 1 ? dayEnd : "0" + dayEnd) : dayStart) + "." + monthEnd + "." + (yearEnd.length() > 0 ? yearEnd : yearStart);
+                    }
+                    if (dt.matches("Time|Час|Время")) {
+                        String dd = eventInfoRowDdList.get(j).getText().trim();
+                        if (dd.contains(" — ")) {
+                            timeStart = dd.split(" — ")[0];
+                            timeEnd = dd.split(" — ")[1];
+                        } else {
+                            timeStart = dd;
                         }
                     }
-                    dayStart = (dayStart.length() > 1
-                        ? dayStart
-                        : "0" + dayStart);
-                    dateStart = dayStart + "." + monthStart + "." + yearStart;
-                    dateEnd = (dayEnd.length() > 0
-                            ? (dayEnd.length() > 1
-                                ? dayEnd
-                                : "0" + dayEnd)
-                            : dayStart)
-                        + "." + monthEnd + "."
-                        + (yearEnd.length() > 0
-                            ? yearEnd
-                            : yearStart);
-                }
-                if (dt.matches("Time|Час|Время")) {
-                    String dd = eventInfoRowDdList.get(j).getText().trim();
-                    if (dd.contains(" — ")) {
-                        timeStart = dd.split(" — ")[0];
-                        timeEnd = dd.split(" — ")[1];
-                    } else {
-                        timeStart = dd;
+                    if (dt.matches("Place|Місце|Место")) {
+                        place = eventInfoRowDdList.get(j).getText().trim();
+                        city = Helper.getCity(place);
+                    }
+                    if (dt.matches("Price|Вартість|Стоимость")) {
+                        price = eventInfoRowDdList.get(j).getText().trim();
                     }
                 }
-                if (dt.matches("Place|Місце|Место")) {
-                    place = eventInfoRowDdList.get(j).getText().trim();
-                    city = Helper.getCity(place);
+                String body = iMainPage.getNewsBody().getAttribute("textContent").trim();
+                List<WebElement> linksBody = iMainPage.getNewsLinksBody();
+                String newsBody = body;
+                for (WebElement webElement : linksBody) {
+                    String linksText = webElement.getText();
+                    String[] split = newsBody.split(linksText);
+                    String link = webElement.getAttribute("href")
+                                            .replace("utm_source=dou","")
+                                            .replace("?&","?")
+                                            .replace("&&","&");
+                    newsBody = newsBody.split(linksText)[0] + " " + linksText + " (Link: " + link + ") " + (split.length > 1 ? split[1] : "");
                 }
-                if (dt.matches("Price|Вартість|Стоимость")) {
-                    price = eventInfoRowDdList.get(j).getText().trim();
-                }
-            }
-            String body = iMainPage.getNewsBody().getText().trim();
-            List<WebElement> linksBody = iMainPage.getNewsLinksBody();
-            String newsBody = body;
-            for (WebElement webElement : linksBody) {
-                String linksText = webElement.getText();
-                String[] split = newsBody.split(linksText);
-                newsBody =
-                    newsBody.split(linksText)[0] + " " + linksText + " (Link: "
-                        + webElement.getAttribute("href") + ") "
-                        + (split.length > 1 ? split[1] : "");
-            }
 
             newsMap.put("newsTitle", iMainPage.getNewsHead().getText());
             newsMap.put("dateStart", dateStart);
@@ -137,23 +127,20 @@ public class MainPageSteps extends Steps {
             newsMap.put("dateEnd", dateEnd);
             newsMap.put("section", section);
             newsMap.put("timeEnd", timeEnd);
-            newsMap.put("place", place);
+            newsMap.put("location", place);
             newsMap.put("price", price);
             newsMap.put("city", city);
 
             newsMapList.add(newsMap);
-            Helper.closeCurrentTabAndBackToBeforeTab();
-        }
+
+                Helper.closeCurrentTabAndBackToBeforeTab();
+            }
+            if (count < iMainPage.getNextList().size()){
+                iMainPage.getNextList().get(count).click();
+                TimeUnit.SECONDS.sleep(5);
+            }
+        } while (count++ < iMainPage.getNextList().size());
         Buffer.setNewsMap(newsMapList);
-        int count = 0;
-        if (iMainPage.getNextList().size() > 0){
-            do {
-                if (count < iMainPage.getNextList().size()) {
-                    iMainPage.getNextList().get(count).click();
-                    TimeUnit.SECONDS.sleep(5);
-                }
-            } while (++count < iMainPage.getNextList().size());
-        }
     }
     @And("^I open all founded IT news at new tab with (.*) section test$")
     public void iOpenAllFoundedITNewsAtNewTabTest(String section) {
@@ -201,46 +188,43 @@ public class MainPageSteps extends Steps {
         List<HashMap<String, String>> newsMap = Buffer.getNewsMap();
         for (HashMap<String, String> element : newsMap) {
             values.add(Arrays.asList(
-                element.get("section"),
-                element.get("city"),
-                element.get("dateStart"),
-                element.get("timeStart"),
-                element.get("dateEnd"),
-                element.get("timeEnd"),
-                element.get("newsTitle"),
-                element.get("newsBody"),
-                element.get("place"),
-                element.get("price")
+                    element.get("dateStart"),
+                    element.get("timeStart"),
+                    element.get("dateEnd"),
+                    element.get("timeEnd"),
+                    "[" + element.get("section") + " - " + element.get("city") + "] " + element.get("newsTitle"),
+                    element.get("price") + ". \n" + element.get("newsBody"),
+                    element.get("location")
             ));
         }
         Helper.setToGoogleSheets(new ValueRange().setValues(values));
     }
 
     @And("^I save to csv$")
-    public void iSaveToCsv() throws IOException {
+    public void iSaveToCsv() {
         log.info("I save to csv");
         List<HashMap<String, String>> news = Buffer.getNewsMap();
-        String[] header = {"section", "city", "dateStart", "timeStart", "dateEnd", "timeEnd", "newsTitle"
-                , "newsBody", "place", "price"};
-        List<String[]> temp = new ArrayList<>();
+        String[] header = {"dateStart", "timeStart", "dateEnd", "timeEnd", "newsTitle", "newsBody", "location"};
+        List<String[]> correctNews = new ArrayList<>();
+        List<String[]> inCorrectNews = new ArrayList<>();
         for (int i = 0; i < Buffer.getNewsMap().size(); i++) {
             HashMap<String, String> element = Buffer.getNewsMap().get(i);
-            temp.add(new String[]{
-                element.get("section"),
-                element.get("city"),
-                element.get("dateStart"),
-                element.get("timeStart"),
-                element.get("dateEnd"),
-                element.get("timeEnd"),
-                element.get("newsTitle"),
-                element.get("newsBody"),
-                element.get("place"),
-                element.get("price")
-            });
+            (!Helper.getForbiddenContent(element.get("newsTitle"))
+                    && !Helper.getForbiddenContent(element.get("newsBody"))
+                ? correctNews
+                : inCorrectNews).add(new String[]{
+                    element.get("dateStart"),
+                    element.get("timeStart"),
+                    element.get("dateEnd"),
+                    element.get("timeEnd"),
+                    "[" + element.get("section") + " - " + element.get("city") + "] " + element.get("newsTitle"),
+                    element.get("price") + ". \n" + element.get("newsBody"),
+                    element.get("location"),
+                });
         }
-        new CSVWriter().writerCSV(header, temp);
-
-
-
+        new CSVWriter().writerCSV(header, correctNews, "CorrectNews");
+        if (inCorrectNews.size() > 0) {
+            new CSVWriter().writerCSV(header, inCorrectNews, "InCorrectNews");
+        }
     }
 }

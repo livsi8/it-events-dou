@@ -17,7 +17,7 @@ public class MainPage extends Page implements IMainPage {
         );
     }
 
-    @FindBy(css = ".title a")
+    @FindBy(css = ".b-postcard .title a")
     List<WebElement> newsTitle;
     @FindBy(css = ".page-head")
     WebElement       newsHead;

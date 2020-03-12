@@ -3,6 +3,7 @@ package Core;
 import static Core.DriverFactory.getDriver;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -88,4 +89,13 @@ public class Helper {
             e.printStackTrace();
         }
     }
+
+    public static Boolean getForbiddenContent(String str) {
+        String[] forbiddenArray = {
+            "кар’єр", "запропонована позиція", " зарплат", "трудоустройство", "собеседовани", "удобный график",
+            "отпуск", "оплачиваемы", "больничн", "испытательн", "% от зп", "на протяжении", "працевлаштуван",
+        };
+        return Arrays.stream(forbiddenArray).anyMatch(str::contains);
+    }
+    
 }
