@@ -200,10 +200,9 @@ public class MainPageSteps extends Steps {
         Helper.setToGoogleSheets(new ValueRange().setValues(values));
     }
 
-    @And("^I save to csv$")
-    public void iSaveToCsv() {
-        log.info("I save to csv");
-        List<HashMap<String, String>> news = Buffer.getNewsMap();
+    @And("^I save to (.*) csv$")
+    public void iSaveToCsv(String name) {
+        log.info("I save to " + name + " csv");
         String[] header = {"dateStart", "timeStart", "dateEnd", "timeEnd", "newsTitle", "newsBody", "location"};
         List<String[]> correctNews = new ArrayList<>();
         List<String[]> inCorrectNews = new ArrayList<>();
@@ -222,9 +221,10 @@ public class MainPageSteps extends Steps {
                     element.get("location"),
                 });
         }
-        new CSVWriter().writerCSV(header, correctNews, "CorrectNews");
+        new CSVWriter().writerCSV(header, correctNews, name + "CorrectNews");
         if (inCorrectNews.size() > 0) {
-            new CSVWriter().writerCSV(header, inCorrectNews, "InCorrectNews");
+            new CSVWriter().writerCSV(header, inCorrectNews, name + "InCorrectNews");
         }
+        Buffer.setNewsMap(new ArrayList<>());
     }
 }
