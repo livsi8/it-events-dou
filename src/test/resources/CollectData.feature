@@ -1,4 +1,3 @@
-@OpenDeal
 Feature: I collect IT news
 
   Scenario: open deal with one click trading
@@ -9,15 +8,15 @@ Feature: I collect IT news
 #    And I go to platform https://dou.ua/calendar/tags/QA/ by url
 #    And I open all founded IT news at new tab with QA section
 #    And I save to QA csv
-#
+
 #    And I go to platform https://dou.ua/calendar/tags/Java/ by url
 #    And I open all founded IT news at new tab with Java section
 #    And I save to Java csv
-#
+
 #    And I go to platform https://dou.ua/calendar/tags/JavaScript/ by url
 #    And I open all founded IT news at new tab with JS section
 #    And I save to JS csv
-#
+
 #    And I go to platform https://dou.ua/calendar/tags/Front%20End/ by url
 #    And I open all founded IT news at new tab with FrontEnd section
 #    And I go to platform https://dou.ua/calendar/tags/Front-end/ by url

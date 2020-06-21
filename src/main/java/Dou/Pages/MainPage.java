@@ -2,11 +2,12 @@ package Dou.Pages;
 
 import Dou.Interface.IMainPage;
 import Dou.Interface.Page;
-import java.util.List;
 import lombok.Getter;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+import java.util.List;
 
 @Getter
 public class MainPage extends Page implements IMainPage {
@@ -29,7 +30,7 @@ public class MainPage extends Page implements IMainPage {
     List<WebElement> eventInfoRowDd;
     @FindBy(css = ".b-typo")
     WebElement newsBody;
-    @FindBy(css = ".b-typo a")
+    @FindBy(css = ".event-info + .b-typo a")
     List<WebElement> newsLinksBody;
     @FindBy(css = ".b-paging a")
     List<WebElement> nextList;

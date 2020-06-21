@@ -7,7 +7,6 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import cucumber.api.java.en.And;
 import org.openqa.selenium.WebElement;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +44,7 @@ public class MainPageSteps extends Steps {
                         if (dd.contains("(")) {
                             dd = dd.replace(dd.substring(dd.indexOf("(")), "").trim();
                         }
+                        // === Year event ===
                         if (dd.matches(".*\\d{4}")) {
                             yearStart = String.valueOf(currentYear);
                             if (dd.contains(String.valueOf(currentYear))) {
@@ -55,7 +55,7 @@ public class MainPageSteps extends Steps {
                                 dd = dd.replace(dd.substring(dd.indexOf(yearEnd)).trim(), "").trim();
                             }
                         }
-// === Month =====================
+                        // === Month event ===
                         int lastIndStart;
                         String monthStart;
                         String monthEnd;
@@ -72,6 +72,7 @@ public class MainPageSteps extends Steps {
                         }
 
                         yearStart = (yearStart.length() > 0 ? yearStart : String.valueOf(currentYear + ((Integer.parseInt(monthStart) < currentMonth) ? 1 : 0)));
+                        // === Day event ===
                         String dayStart, dayEnd = "";
                         if (dd.matches(".*[A-Za-zА-Яа-я]\\s—\\s\\d{1,2}\\s[A-Za-zА-Яа-я].*")) {
                             String[] doubleDate = dd.split(" — ");
@@ -90,6 +91,7 @@ public class MainPageSteps extends Steps {
                         dateStart = dayStart + "." + monthStart + "." + yearStart;
                         dateEnd = (dayEnd.length() > 0 ? (dayEnd.length() > 1 ? dayEnd : "0" + dayEnd) : dayStart) + "." + monthEnd + "." + (yearEnd.length() > 0 ? yearEnd : yearStart);
                     }
+                    // === Time event ===
                     if (dt.matches("Time|Час|Время")) {
                         String dd = eventInfoRowDdList.get(j).getText().trim();
                         if (dd.contains(" — ")) {
@@ -99,6 +101,7 @@ public class MainPageSteps extends Steps {
                             timeStart = dd;
                         }
                     }
+                    // === Place event ===
                     if (dt.matches("Place|Місце|Место")) {
                         place = eventInfoRowDdList.get(j).getText().trim();
                         city = Helper.getCity(place);
@@ -107,34 +110,46 @@ public class MainPageSteps extends Steps {
                         price = eventInfoRowDdList.get(j).getText().trim();
                     }
                 }
+                // === Body event ===
                 String body = iMainPage.getNewsBody().getAttribute("textContent").trim();
                 List<WebElement> linksBody = iMainPage.getNewsLinksBody();
-                String newsBody = body;
+                StringBuilder newsBody = new StringBuilder();
+                String newsBodyHeader = "";
+                String newsBodyTail = body.replaceAll("\\u00A0", " ")
+                                          .replaceAll("\\u200B","");
                 for (WebElement webElement : linksBody) {
+                    int lastIndex = newsBodyTail.indexOf(webElement.getText());
                     String linksText = webElement.getText();
-                    String[] split = newsBody.split(linksText);
+                    newsBodyHeader = (newsBodyTail.length() > 1 ? newsBodyTail.substring(0, lastIndex) : "");
+                    newsBodyTail = newsBodyTail.substring(lastIndex + linksText.length());
                     String link = webElement.getAttribute("href")
                                             .replace("utm_source=dou","")
                                             .replace("?&","?")
                                             .replace("&&","&");
-                    newsBody = newsBody.split(linksText)[0] + " " + linksText + " (Link: " + link + ") " + (split.length > 1 ? split[1] : "");
+                    newsBody.append(newsBodyHeader)
+                            .append(" ")
+                            .append(linksText.length() > 0
+                                ? linksText
+                                : "[picture]")
+                            .append(" (Link: ")
+                            .append(link)
+                            .append(") ");
                 }
-
-            newsMap.put("newsTitle", iMainPage.getNewsHead().getText());
-            newsMap.put("dateStart", dateStart);
-            newsMap.put("timeStart", timeStart);
-            newsMap.put("newsBody", newsBody);
-            newsMap.put("dateEnd", dateEnd);
-            newsMap.put("section", section);
-            newsMap.put("timeEnd", timeEnd);
-            newsMap.put("location", place);
-            newsMap.put("price", price);
-            newsMap.put("city", city);
-
-            newsMapList.add(newsMap);
-
+                newsBody.append(newsBodyTail.length() > 1 ? newsBodyTail : "");
+                newsMap.put("newsTitle", iMainPage.getNewsHead().getText());
+                newsMap.put("dateStart", dateStart);
+                newsMap.put("timeStart", timeStart);
+                newsMap.put("newsBody", newsBody.toString());
+                newsMap.put("dateEnd", dateEnd);
+                newsMap.put("section", section);
+                newsMap.put("timeEnd", timeEnd);
+                newsMap.put("location", place);
+                newsMap.put("price", price);
+                newsMap.put("city", city);
+                newsMapList.add(newsMap);
                 Helper.closeCurrentTabAndBackToBeforeTab();
             }
+            // === Next page ===
             if (count < iMainPage.getNextList().size()){
                 iMainPage.getNextList().get(count).click();
                 TimeUnit.SECONDS.sleep(5);
@@ -217,7 +232,10 @@ public class MainPageSteps extends Steps {
                     element.get("dateEnd"),
                     element.get("timeEnd"),
                     "[" + element.get("section") + " - " + element.get("city") + "] " + element.get("newsTitle"),
-                    element.get("price") + ". \n" + element.get("newsBody"),
+                    (element.get("price").length() > 0
+                            ? element.get("price") + ". \n"
+                            : "") +
+                        element.get("newsBody"),
                     element.get("location"),
                 });
         }

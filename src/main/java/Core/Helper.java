@@ -1,17 +1,75 @@
 package Core;
 
-import static Core.DriverFactory.getDriver;
+import Google.GoogleSheets;
+import com.google.api.services.sheets.v4.model.ValueRange;
+import org.openqa.selenium.JavascriptExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import Google.GoogleSheets;
-import com.google.api.services.sheets.v4.model.ValueRange;
-import org.openqa.selenium.JavascriptExecutor;
+import static Core.DriverFactory.getDriver;
 
 public class Helper {
+    private static String header = "";
+    private static String[] forbiddenArray = {
+            "запропонована позиція",
+            "трудоустройств",
+            "удобный график",
+            "отпуск",
+            "больничн",
+            "испытательн",
+            "% от зп",
+            "% від зп",
+            "працевлаштуван",
+            "резюме",
+            "долучит",
+            "в нашей компании",
+            "предлагаем работу ",
+            "работа в нашей",
+            "кращих випускників",
+            "приєднатися до команди",
+            "рекрутер",
+            "успешно трудоустроены",
+            "присоединяйтесь к нашей команде",
+            "остались работать",
+            " зарплата ",
+            " зарплате ",
+            "под действующие проекты",
+            "[скасовано]",
+            " наш HR ",
+            "с зарплатой",
+            "должность Trainee",
+            "отримують роботу у",
+//            "собеседовани",
+//            "після закінчення",
+//            "кар’єр",
+//            "працівник",
+//            "роботу",
+//            "робота ",
+    };
+
+    public static Boolean getForbiddenContent(String str) {
+        header = str.length() < 150 ? str : "";
+        List<String> forbidden = Arrays.stream(forbiddenArray)
+                                       .map(String::toLowerCase)
+                                       .filter(str.toLowerCase()::contains)
+                                       .collect(Collectors.toList());
+        if (!forbidden.isEmpty()) {
+            System.out.println(
+                "\n=====================\n" +
+                "header = \"" + header + "\"\n" +
+                "body   = \"" + str.substring(0, Math.min(str.length(), 150)).replaceAll("\n|\r\n", "") +
+                "\"\n~~~~~~~~~~~~~~~~~~~~~");
+            forbidden.stream().forEach(e-> System.out.println("\"" + e + "\""));
+        }
+        return Arrays.stream(forbiddenArray)
+                .map(String::toLowerCase)
+                .anyMatch(str.toLowerCase()::contains);
+    }
+
     public static void goToNewTabAndOpenUrl (String urlWithNews) {
         ((JavascriptExecutor) getDriver()).executeScript("window.open()");
         ArrayList<String> tabs = new ArrayList<> (getDriver().getWindowHandles());
@@ -89,15 +147,4 @@ public class Helper {
             e.printStackTrace();
         }
     }
-
-    public static Boolean getForbiddenContent(String str) {
-        String[] forbiddenArray = {
-            "кар’єр", "запропонована позиція", " зарплат", "трудоустройств", "собеседовани", "удобный график",
-            "отпуск", "отпуск", "больничн", "испытательн", "% от зп", "на протяжении", "працевлаштуван",
-            "долучит", "компан", "працівник", "роботу", "робота", "работу", "работа", "Після закінчення",
-            "кращих випускників", "приєднатися до команди", "рекрутер",
-        };
-        return Arrays.stream(forbiddenArray).anyMatch(str::contains);
-    }
-    
 }

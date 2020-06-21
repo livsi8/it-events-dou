@@ -71,7 +71,7 @@ public class WebDriverConfig {
         }
         ChromeOptions options = new ChromeOptions();
         options.addArguments("disable-infobars");
-        options.addArguments("start-maximized");
+//        options.addArguments("start-maximized");
         WebDriver driver = new ChromeDriver(options);
         //Лог для версии драйвера и браузера
         Capabilities        cap = ((RemoteWebDriver) driver).getCapabilities();
