@@ -1,6 +1,6 @@
 Feature: I collect IT news
 
-  Scenario: open deal with one click trading
+  Scenario: open dou.ua by category
     And I go to platform https://dou.ua/calendar/tags/DevOps/ by url
     And I open all founded IT news at new tab with DevOps section
     And I save to DevOps csv
