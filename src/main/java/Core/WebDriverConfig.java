@@ -1,6 +1,8 @@
 package Core;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -24,14 +26,24 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
+import static Core.DriverFactory.defineChromeVersion;
+
 public class WebDriverConfig {
     public static        ArrayList<WebDriver> activeDrivers     = new ArrayList<>();
     private static final String               HUB_SELENOID      =
         ConfigBrowsers.getProperty("selenoid.hub.url");
     private static final String               SCREEN_RESOLUTION =
         ConfigBrowsers.getProperty("screen.resolution");
-    private static final String               WDM_VERSION       =
-        ConfigBrowsers.getProperty("wdm.version");
+    private static String               WDM_VERSION = null;
+
+    static {
+        try {
+            WDM_VERSION = defineChromeVersion();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static final Logger               log               =
         LogManager.getLogger(WebDriverConfig.class.getName());
     public static        Capabilities         ChromeCapabilities;

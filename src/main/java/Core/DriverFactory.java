@@ -1,6 +1,9 @@
 package Core;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Scanner;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Capabilities;
@@ -88,6 +91,30 @@ public class DriverFactory {
             cap.getVersion(),
             cap.getPlatform()
         );
+    }
+
+    /**
+     * @return version of installed Google Chrome like 87.0
+     * @throws IOException
+     */
+    public static String defineChromeVersion() throws IOException {
+        String cmd = "wmic datafile where name=\"C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" get Version /value\n";
+        Scanner scanner = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
+        String version = scanner.hasNext() ? scanner.next() : "";
+        if (!version.contains("Version")) {
+            cmd = "wmic datafile where name=\"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" get Version /value\n";
+            scanner = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
+            version = scanner.hasNext() ? scanner.next() : "";
+        }
+        if (!version.isEmpty()) {
+            version = version.split("=")[1];
+            String[] split = version.split("\\.");
+            version = split[0] + "." + split[1];
+        } else {
+            throw new RuntimeException("Unable to define Google Chrome version!");
+        }
+        System.out.println("Detected Google Chrome version: " + version);
+        return version;
     }
 
     public static Account getCurrentUser() {
