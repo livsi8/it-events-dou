@@ -11,8 +11,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MainPageSteps extends Steps {
-    @And("^I open all founded IT news at new tab with (.*) section$")
-    public void ФiOpenAllFoundedITNewsAtNewTab(String section) throws InterruptedException {
+    @And("^I collect all founded IT news at new tab with (.*) section$")
+    public void iСollectAllFoundedITNewsAtNewTab(String section) throws InterruptedException {
         log.info("I open all founded IT news at new tab");
         ArrayList<HashMap<String, String>> newsMapList = (Buffer.getNewsMap() == null
                 ? new ArrayList<>()
