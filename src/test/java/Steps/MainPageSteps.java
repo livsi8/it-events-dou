@@ -120,7 +120,7 @@ public class MainPageSteps extends Steps {
                 for (WebElement webElement : linksBody) {
                     int lastIndex = newsBodyTail.indexOf(webElement.getText());
                     String linksText = webElement.getText();
-                    newsBodyHeader = (newsBodyTail.length() > 1 ? newsBodyTail.substring(0, lastIndex) : "");
+                    newsBodyHeader = (newsBodyTail.length() > 1 && lastIndex >= 0 ? newsBodyTail.substring(0, lastIndex) : "");
                     newsBodyTail = newsBodyTail.substring(lastIndex + linksText.length());
                     String link = webElement.getAttribute("href")
                                             .replace("utm_source=dou","")
