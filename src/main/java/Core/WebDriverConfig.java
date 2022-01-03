@@ -1,11 +1,13 @@
 package Core;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import static Core.DriverFactory.defineChromeVersion;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -25,8 +27,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
-
-import static Core.DriverFactory.defineChromeVersion;
 
 public class WebDriverConfig {
     public static        ArrayList<WebDriver> activeDrivers     = new ArrayList<>();
@@ -82,8 +82,11 @@ public class WebDriverConfig {
             WebDriverManager.chromedriver().setup();
         }
         ChromeOptions options = new ChromeOptions();
+        options.setExperimentalOption("useAutomationExtension", false);
+        options.setExperimentalOption("excludeSwitches",
+                                      Collections.singletonList("enable-automation"));
         options.addArguments("disable-infobars");
-//        options.addArguments("start-maximized");
+        options.addArguments("start-maximized");
         WebDriver driver = new ChromeDriver(options);
         //Лог для версии драйвера и браузера
         Capabilities        cap = ((RemoteWebDriver) driver).getCapabilities();

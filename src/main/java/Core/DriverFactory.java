@@ -42,7 +42,7 @@ public class DriverFactory {
         return drivers.get(currentUser);
     }
 
-    public static void destroyDriver() throws InterruptedException {
+    public static void destroyDriver() {
         WebDriver driver = getDriver();
         if (drivers.containsKey(currentUser)) {
             //TODO ФИКСИТЬ , ЗАКРЫТ ДАННЫЙ  СКРИПТ НА БИНАРКЕ

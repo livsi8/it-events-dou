@@ -241,7 +241,7 @@ public class MainPageSteps extends Steps {
         }
         new CSVWriter().writerCSV(header, correctNews, name + "CorrectNews");
         if (inCorrectNews.size() > 0) {
-            new CSVWriter().writerCSV(header, inCorrectNews, name + "InCorrectNews");
+            new CSVWriter().writerCSV(header, inCorrectNews, name + "_______InCorrectNews");
         }
         Buffer.setNewsMap(new ArrayList<>());
     }
