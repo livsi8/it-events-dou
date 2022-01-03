@@ -37,7 +37,7 @@
         <rest.assured.version>3.2.0</rest.assured.version>
         <maven.compiler.target>1.8</maven.compiler.target>
         <allure-junit4.version>2.7.0</allure-junit4.version>
-        <google.guava.version>24.0-jre</google.guava.version>
+        <google.guava.version>29.0-jre</google.guava.version>
         <selenium-java.version>3.141.59</selenium-java.version>
         <javax.mail-api.version>1.4.5</javax.mail-api.version>
         <javax.activation.version>1.1</javax.activation.version>
