@@ -122,10 +122,15 @@ public class MainPageSteps extends Steps {
                     String linksText = webElement.getText();
                     newsBodyHeader = (newsBodyTail.length() > 1 && lastIndex >= 0 ? newsBodyTail.substring(0, lastIndex) : "");
                     newsBodyTail = newsBodyTail.substring(lastIndex + linksText.length());
-                    String link = webElement.getAttribute("href")
-                                            .replace("utm_source=dou","")
-                                            .replace("?&","?")
-                                            .replace("&&","&");
+                    String link;
+                    if (webElement.getAttribute("href") != null) {
+                        link = webElement.getAttribute("href")
+                            .replace("utm_source=dou","")
+                            .replace("?&","?")
+                            .replace("&&","&");
+                    } else {
+                        link = "[unfortunately I got empty link]";
+                    }
                     newsBody.append(newsBodyHeader)
                             .append(" ")
                             .append(linksText.length() > 0
