@@ -1,5 +1,7 @@
 package Steps;
 
+import static Core.Helper.waitForCondition;
+
 import CSV.CSVWriter;
 import Core.Buffer;
 import Core.Helper;
@@ -123,6 +125,12 @@ public class MainPageSteps extends Steps {
                     newsBodyHeader = (newsBodyTail.length() > 1 && lastIndex >= 0 ? newsBodyTail.substring(0, lastIndex) : "");
                     newsBodyTail = newsBodyTail.substring(lastIndex + linksText.length());
                     String link;
+                    waitForCondition(
+                        condition -> webElement.getAttribute("href") != null,
+                        "I can't wait href",
+                        5,
+                        50
+                    );
                     if (webElement.getAttribute("href") != null) {
                         link = webElement.getAttribute("href")
                             .replace("utm_source=dou","")

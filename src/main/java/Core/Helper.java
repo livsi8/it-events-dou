@@ -2,6 +2,7 @@ package Core;
 
 import Google.GoogleSheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import java.util.function.Function;
 import org.openqa.selenium.JavascriptExecutor;
 
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static Core.DriverFactory.getDriver;
 
@@ -89,6 +92,17 @@ public class Helper {
             300,
             TimeUnit.SECONDS
         );
+    }
+
+    public static void waitForCondition(
+        Function<WebDriver, Boolean> condition, String message, int timeOfWait, int... timeOfTryOut
+    ) {
+        int timeOfRevision = timeOfTryOut.length == 0
+            ? 100
+            : timeOfTryOut[0];
+        try {
+            new WebDriverWait(getDriver(), timeOfWait, timeOfRevision).until(condition);
+        } catch (Exception ignore) {}
     }
 
     public static void closeCurrentTabAndBackToBeforeTab () {
